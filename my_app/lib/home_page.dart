@@ -37,7 +37,7 @@ final List<Map<String, String>> resData = [
 ];
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
-
+ 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,35 +76,7 @@ class HomePage extends StatelessWidget {
       context,
       MaterialPageRoute(
        
-        builder: (context) => SearchResults(results: [
-  {
-    'imageUrl': 'assets/res2.jpg',
-    'title': 'Dagm',
-    'Dis': '2km',
-    'rating': '4.5',
-    'id':'3'
-  },
-  {
-    'imageUrl': 'assets/res1.jpg',
-    'title': 'Kitchen',
-    'Dis': '4km',
-    'rating': '4.5',
-    'id':'2'
-  },
-    {
-    'imageUrl': 'assets/res3.jpg',
-    'title': 'Anobie',
-    'Dis': '3km',
-    'rating': '1.5',
-    'id':'4'
-  },
-  {
-    'imageUrl': 'assets/res3.jpg',
-    'title': 'amanuel',
-    'Dis': '1km',
-    'rating': '5',
-    'id':'1'
-  },],),
+        builder: (context) => SearchResults(res: text),
       ),
     );
   },
@@ -115,12 +87,11 @@ class HomePage extends StatelessWidget {
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: [
-                  _buildRecommendedItem('Catering'),
-                  _buildRecommendedItem('Pizza'),
-                  _buildRecommendedItem('Burger'),
-                  _buildRecommendedItem('Cafe'),
-                  _buildRecommendedItem('Restaurant'),
-                  _buildRecommendedItem('Bar'),
+                  _buildRecommendedItem('Pizza','assets/pizza2.jpg'),
+                  _buildRecommendedItem('Burger','assets/burger2.jpg'),
+                  _buildRecommendedItem('Cafe','assets/icafe.jpg'),
+                  _buildRecommendedItem('Restaurant','assets/res.png'),
+                  _buildRecommendedItem('Bar','assets/bar.jpg'),
                 ],
               ),
             ),
@@ -143,6 +114,7 @@ class HomePage extends StatelessWidget {
                         MaterialPageRoute(builder: (context) => PlaceProfile()),
                       );
                     },
+                    
                     child:  ListTile(
                     leading: ConstrainedBox(
                             constraints: BoxConstraints(
@@ -153,6 +125,8 @@ class HomePage extends StatelessWidget {
                             ),
                             child: Image.asset( '${itemData['imageUrl']}', fit: BoxFit.cover),
                             ),
+                    
+                    tileColor: Color.fromARGB(255, 64, 95, 65),
                     title: Text('${itemData['title']}'),
                     subtitle: Text('${itemData['Dis']}'),
                     trailing:  Row(
@@ -161,9 +135,11 @@ class HomePage extends StatelessWidget {
                       Text('${itemData['rating']}'),
                       SizedBox(width: 5), // Add some spacing
                       Icon(Icons.star, color: Colors.yellow),
+                      const Divider(),
                 ],
               ),
                     ),
+                   
                   );
                 },
               ),
@@ -175,15 +151,17 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildRecommendedItem(String name) {
+  Widget _buildRecommendedItem(String name,String img) {
     return Container(
       width: 100,
       margin: const EdgeInsets.symmetric(horizontal: 8.0),
       child: Column(
         children: [
-          const Icon(Icons.food_bank, size: 50),
-          Text(name),
-
+          CircleAvatar(
+                radius:30, // Adjust radius as needed
+                backgroundImage: AssetImage('$img'), 
+              ),
+        Text(name),
         ],
       ),
     );

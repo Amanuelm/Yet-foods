@@ -10,25 +10,42 @@ class LoginPage extends StatelessWidget {
       body: Container(
         color: Colors.white,
         padding: const EdgeInsets.all(16.0),
+        
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Padding(
+  padding: const EdgeInsets.only(top: 20.0), // Adjust top padding as needed
+  child: Icon(
+    Icons.account_circle,
+    size: 190.0,
+    color: Color.fromARGB(255, 2, 234, 60),
+  ),),
             const Text("Welcome Back", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
             const SizedBox(height: 20),
-            const TextField(
+            const TextField(style: TextStyle(color: Color.fromARGB(255, 2, 234, 60)),
               decoration: InputDecoration(labelText: 'Phone number'),
             ),
-            const TextField(
+            const TextField(style: TextStyle(color: Color.fromARGB(255, 2, 234, 60)),
               decoration: InputDecoration(labelText: 'Password'),
               obscureText: true,
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/home');
+                   onPressed: () {
+    // Navigate to Login Page
+                    Navigator.pushNamed(context, '/home');
               },
-              child: const Text('Log In'),
-            ),
+              style: ElevatedButton.styleFrom( 
+    backgroundColor: Color.fromARGB(255, 236, 15, 15), // Change background color to green
+  ),
+              child: SizedBox(
+               width:170.0, // Adjust width as needed
+              height: 60.0, // Adjust height as needed
+             child: Center( 
+              child: const Text('Log In',style: TextStyle(color:Color.fromARGB(255, 252, 252, 252),fontSize: 20)),)
+              ),
+              ),
             TextButton(
               onPressed: () {},
               child: const Text('Forgot password?'),
