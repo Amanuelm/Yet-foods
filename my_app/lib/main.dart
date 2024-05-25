@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'forgotpasspage.dart';
 import 'sign_up_page.dart';
 import 'login_page.dart';
 import 'home_page.dart';
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginPage(),
         '/home': (context) => const HomePage(),
         '/signup': (context) => const SignUpPage(),
+        '/forgot-password': (context) => ForgotPasswordPage(),
 
         
       },

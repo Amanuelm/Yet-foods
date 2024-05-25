@@ -47,7 +47,9 @@ class LoginPage extends StatelessWidget {
               ),
               ),
             TextButton(
-              onPressed: () {},
+              onPressed: (
+                
+              ) {Navigator.pushNamed(context,'/forgot-password');},
               child: const Text('Forgot password?'),
             ),
             TextButton(
