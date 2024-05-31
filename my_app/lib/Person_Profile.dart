@@ -1,4 +1,6 @@
-// profile_page.dart
+// profile_page.dartimport 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -9,12 +11,34 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  File? _image;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  File? _image;
   final _fullNameController = TextEditingController();
   final _userNameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserData();
+  }
+
+  Future<void> _fetchUserData() async {
+    User? user = _auth.currentUser;
+    if (user != null) {
+      DocumentSnapshot userDoc = await _firestore.collection('users').doc(user.uid).get();
+      if (userDoc.exists) {
+        setState(() {
+          _fullNameController.text = userDoc['name'];
+          _userNameController.text = userDoc['username'];
+          _emailController.text = userDoc['email'];
+        });
+      }
+    }
+  }
 
   Future<void> _pickImage() async {
     final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -33,6 +57,26 @@ class _ProfilePageState extends State<ProfilePage> {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  Future<void> _updateUserProfile() async {
+    User? user = _auth.currentUser;
+    if (user != null) {
+      await _firestore.collection('users').doc(user.uid).update({
+        'name': _fullNameController.text,
+        'username': _userNameController.text,
+        'email': _emailController.text,
+        // Update other fields as necessary
+      });
+
+      // Optionally update the user's email and password in FirebaseAuth
+      if (_emailController.text.isNotEmpty) {
+        await user.updateEmail(_emailController.text);
+      }
+      if (_passwordController.text.isNotEmpty) {
+        await user.updatePassword(_passwordController.text);
+      }
+    }
   }
 
   @override
@@ -70,8 +114,11 @@ class _ProfilePageState extends State<ProfilePage> {
             _buildTextField(_passwordController, 'Password', Icons.lock, obscureText: true),
             SizedBox(height: 32),
             ElevatedButton(
-              onPressed: () {
-                // Handle profile update logic here
+              onPressed: () async {
+                await _updateUserProfile();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Profile updated successfully')),
+                );
               },
               child: Text('Update Profile'),
             ),

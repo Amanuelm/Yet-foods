@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
+final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
 // TextEditingControllers for sign-up fields
 final TextEditingController _nameController = TextEditingController();
@@ -38,7 +40,7 @@ class _SignUpPageState extends State<SignUpPage> {
               decoration: const InputDecoration(
                 labelText: 'Phone Number (Optional)',
               ),
-              keyboardType: TextInputType.phone, // Optional for phone number input
+              keyboardType: TextInputType.phone,
             ),
             const SizedBox(height: 10.0),
             TextField(
@@ -94,23 +96,18 @@ class _SignUpPageState extends State<SignUpPage> {
         return;
       }
 
-      print('Creating user with email: $email');
       UserCredential userCredential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
-      User? user = userCredential.user;
-      print('User created: ${user?.uid}');
-
-      // Implement logic to store user data (name, phone) in your database (if applicable)
-      // For example, using Firestore:
-      // await FirebaseFirestore.instance.collection('users').doc(user?.uid).set({
-      //   'name': name,
-      //   'phone': phone,
-      //   'email': email,
-      // });
+      
+      // Store additional user information in Firestore
+      await _firestore.collection('users').doc(userCredential.user!.uid).set({
+        'name': name,
+        'phone': phone,
+        'email': email,
+      });
 
       // Navigate to your home screen (replace with your route name)
       Navigator.pushReplacementNamed(context, '/home');
     } on FirebaseAuthException catch (error) {
-      print('FirebaseAuthException: ${error.code}, ${error.message}');
       String message = 'An error occurred.';
       switch (error.code) {
         case 'invalid-email':
@@ -126,8 +123,7 @@ class _SignUpPageState extends State<SignUpPage> {
           message = 'The password is too weak.';
           break;
         default:
-          // Handle other errors
-          message = 'Error: ${error.message}';
+          print(error.code); // Log the error for debugging
       }
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -135,7 +131,7 @@ class _SignUpPageState extends State<SignUpPage> {
         ),
       );
     } catch (error) {
-      print('Unexpected error: $error'); // Log the error for debugging
+      print(error); // Log the error for debugging (e.g., network errors)
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('An unexpected error occurred.'),

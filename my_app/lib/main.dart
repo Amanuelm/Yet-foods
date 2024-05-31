@@ -1,7 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'sign_up_page.dart'; 
-import 'home_page.dart';// Update with the correct import
+import 'home_page.dart';
+import 'login_page.dart';
+import 'intro.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,8 +19,9 @@ class MyApp extends StatelessWidget {
       title: 'Your App',
       initialRoute: '/',
       routes: {
-        '/': (context) => SignUpPage(),
-        '/home': (context) => HomePage(), // Replace with your actual home page
+        '/': (context) => IntroPage(),
+        '/home': (context) => HomePage(),
+        '/login': (context) => LoginPage(), 
       },
     );
   }
@@ -25,10 +29,6 @@ class MyApp extends StatelessWidget {
 
 // import 'package:flutter/material.dart';
 // import 'package:firebase_core/firebase_core.dart';
-// import 'sign_up_page.dart';
-// import 'login_page.dart';
-// import 'home_page.dart';
-// import 'intro.dart';
 
 // void main() async {
 //   WidgetsFlutterBinding.ensureInitialized();
