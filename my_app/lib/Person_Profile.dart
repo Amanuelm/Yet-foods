@@ -1,6 +1,5 @@
-// profile_page.dartimport 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -18,7 +17,6 @@ class _ProfilePageState extends State<ProfilePage> {
   final _fullNameController = TextEditingController();
   final _userNameController = TextEditingController();
   final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
 
   @override
   void initState() {
@@ -33,7 +31,6 @@ class _ProfilePageState extends State<ProfilePage> {
       if (userDoc.exists) {
         setState(() {
           _fullNameController.text = userDoc['name'];
-          _userNameController.text = userDoc['username'];
           _emailController.text = userDoc['email'];
         });
       }
@@ -55,7 +52,6 @@ class _ProfilePageState extends State<ProfilePage> {
     _fullNameController.dispose();
     _userNameController.dispose();
     _emailController.dispose();
-    _passwordController.dispose();
     super.dispose();
   }
 
@@ -64,19 +60,20 @@ class _ProfilePageState extends State<ProfilePage> {
     if (user != null) {
       await _firestore.collection('users').doc(user.uid).update({
         'name': _fullNameController.text,
-        'username': _userNameController.text,
         'email': _emailController.text,
         // Update other fields as necessary
       });
 
-      // Optionally update the user's email and password in FirebaseAuth
+      // Optionally update the user's email in FirebaseAuth
       if (_emailController.text.isNotEmpty) {
         await user.updateEmail(_emailController.text);
       }
-      if (_passwordController.text.isNotEmpty) {
-        await user.updatePassword(_passwordController.text);
-      }
     }
+  }
+
+  Future<void> _logout() async {
+    await _auth.signOut();
+    Navigator.pushReplacementNamed(context, '/login'); // Adjust this as necessary to navigate to your login screen
   }
 
   @override
@@ -84,6 +81,12 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Profile'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: _logout,
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.0),
@@ -107,11 +110,7 @@ class _ProfilePageState extends State<ProfilePage> {
             SizedBox(height: 16),
             _buildTextField(_fullNameController, 'Full Name', Icons.person),
             SizedBox(height: 16),
-            _buildTextField(_userNameController, 'Username', Icons.account_circle),
-            SizedBox(height: 16),
             _buildTextField(_emailController, 'Email', Icons.email),
-            SizedBox(height: 16),
-            _buildTextField(_passwordController, 'Password', Icons.lock, obscureText: true),
             SizedBox(height: 32),
             ElevatedButton(
               onPressed: () async {
