@@ -1,32 +1,60 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'sign_up_page.dart';
-import 'login_page.dart';
-import 'home_page.dart';
-import 'intro.dart';
+import 'sign_up_page.dart'; 
+import 'home_page.dart';// Update with the correct import
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      title: 'Your App',
       initialRoute: '/',
       routes: {
-        '/': (context) => const IntroPage(),
-        '/login': (context) => const LoginPage(),
-        '/home': (context) => const HomePage(),
-        '/signup': (context) => const SignUpPage(),
-
-        
+        '/': (context) => SignUpPage(),
+        '/home': (context) => HomePage(), // Replace with your actual home page
       },
     );
   }
 }
+
+// import 'package:flutter/material.dart';
+// import 'package:firebase_core/firebase_core.dart';
+// import 'sign_up_page.dart';
+// import 'login_page.dart';
+// import 'home_page.dart';
+// import 'intro.dart';
+
+// void main() async {
+//   WidgetsFlutterBinding.ensureInitialized();
+//   await Firebase.initializeApp();
+//   runApp(const MyApp());
+// }
+
+// class MyApp extends StatelessWidget {
+//   const MyApp({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       title: 'Flutter Demo',
+//       theme: ThemeData(
+//         primarySwatch: Colors.blue,
+//       ),
+//       initialRoute: '/',
+//       routes: {
+//         '/': (context) => const IntroPage(),
+//         '/login': (context) => LoginPage(),
+//         '/home': (context) => const HomePage(),
+//         '/signup': (context) =>  SignUpPage(),
+
+        
+//       },
+//     );
+//   }
+// }

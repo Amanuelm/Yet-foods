@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "105709893756",
+    "project_id": "yet-foods-28a8d",
+    "storage_bucket": "yet-foods-28a8d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:105709893756:android:dd576669b7deef326a71f9",
+        "android_client_info": {
+          "package_name": "com.example.my_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBcU3weEnTiqyZ5EDqkPT47AXz3XSP8azU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

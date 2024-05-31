@@ -1,64 +1,104 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+final FirebaseAuth _auth = FirebaseAuth.instance;
 
+// TextEditingControllers for login fields
+final TextEditingController _emailController = TextEditingController();
+final TextEditingController _passwordController = TextEditingController();
+
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Log In')),
-      body: Container(
-        color: Colors.white,
-        padding: const EdgeInsets.all(16.0),
-        
+      appBar: AppBar(
+        title: const Text('Login'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Padding(
-  padding: const EdgeInsets.only(top: 20.0), // Adjust top padding as needed
-  child: Icon(
-    Icons.account_circle,
-    size: 190.0,
-    color: Color.fromARGB(255, 2, 234, 60),
-  ),),
-            const Text("Welcome Back", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 20),
-            const TextField(style: TextStyle(color: Color.fromARGB(255, 2, 234, 60)),
-              decoration: InputDecoration(labelText: 'Phone number'),
+            TextField(
+              controller: _emailController,
+              decoration: const InputDecoration(
+                labelText: 'Email',
+              ),
+              keyboardType: TextInputType.emailAddress,
             ),
-            const TextField(style: TextStyle(color: Color.fromARGB(255, 2, 234, 60)),
-              decoration: InputDecoration(labelText: 'Password'),
+            const SizedBox(height: 10.0),
+            TextField(
+              controller: _passwordController,
+              decoration: const InputDecoration(
+                labelText: 'Password',
+              ),
               obscureText: true,
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 20.0),
             ElevatedButton(
-                   onPressed: () {
-    // Navigate to Login Page
-                    Navigator.pushNamed(context, '/home');
-              },
-              style: ElevatedButton.styleFrom( 
-    backgroundColor: Color.fromARGB(255, 236, 15, 15), // Change background color to green
-  ),
-              child: SizedBox(
-               width:170.0, // Adjust width as needed
-              height: 60.0, // Adjust height as needed
-             child: Center( 
-              child: const Text('Log In',style: TextStyle(color:Color.fromARGB(255, 252, 252, 252),fontSize: 20)),)
-              ),
-              ),
-            TextButton(
-              onPressed: () {},
-              child: const Text('Forgot password?'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/signup');
-              },
-              child: const Text("Don't have an account? Create Account"),
+              onPressed: () => _signInWithEmailAndPassword(),
+              child: const Text('Login'),
             ),
           ],
         ),
       ),
     );
+  }
+
+  Future<void> _signInWithEmailAndPassword() async {
+    try {
+      final email = _emailController.text.trim();
+      final password = _passwordController.text.trim();
+
+      // Basic email validation (optional)
+      if (email.isEmpty || !email.contains('@')) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Please enter a valid email address.'),
+          ),
+        );
+        return;
+      }
+
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
+      // Navigate to your home screen (replace with your route name)
+      Navigator.pushReplacementNamed(context, '/home');
+    } on FirebaseAuthException catch (error) {
+      String message = 'An error occurred.';
+      switch (error.code) {
+        case 'invalid-email':
+          message = 'The email address is invalid.';
+          break;
+        case 'user-disabled':
+          message = 'The user account has been disabled.';
+          break;
+        case 'user-not-found':
+          message = 'The user account does not exist.';
+          break;
+        case 'wrong-password':
+          message = 'The password is incorrect.';
+          break;
+        default:
+          // Handle other errors
+          print(error.code); // Log the error for debugging
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(message),
+        ),
+      );
+    } catch (error) {
+      print(error); // Log the error for debugging (e.g., network errors)
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('An unexpected error occurred.'),
+        ),
+      );
+    }
   }
 }
