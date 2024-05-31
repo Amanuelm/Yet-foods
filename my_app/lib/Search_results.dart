@@ -57,12 +57,12 @@ class SearchResults extends StatelessWidget {
                   
                  return InkWell(
                     
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => PlaceProfile()),
-                      );
-                    },
+                    // onTap: () {
+                    //   Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(builder: (context) => PlaceProfile()),
+                    //   );
+                    // },
                     child:  ListTile(
                     leading: ConstrainedBox(
                             constraints: BoxConstraints(
