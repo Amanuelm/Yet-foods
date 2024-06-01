@@ -1,94 +1,113 @@
 import 'package:flutter/material.dart';
-import 'place_profile.dart'; 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'place_profile.dart';
 
-final List<Map<String, String>> results = [
-  {
-    'imageUrl': 'assets/res2.jpg',
-    'title': 'Dagm',
-    'Dis': '2km',
-    'rating': '4.5',
-    'id':'3'
-  },
-  {
-    'imageUrl': 'assets/res1.jpg',
-    'title': 'Kitchen',
-    'Dis': '4km',
-    'rating': '4.5',
-    'id':'2'
-  },
-    {
-    'imageUrl': 'assets/res3.jpg',
-    'title': 'Anobie',
-    'Dis': '3km',
-    'rating': '1.5',
-    'id':'4'
-  },
-  {
-    'imageUrl': 'assets/res3.jpg',
-    'title': 'amanuel',
-    'Dis': '1km',
-    'rating': '5',
-    'id':'1'
-  },];
-class SearchResults extends StatelessWidget {
-  final String res; // Replace 'SearchResult' with your data structure
+class SearchResults extends StatefulWidget {
+  final String query;
 
-  const SearchResults({Key? key, required this.res}) : super(key: key);
+  const SearchResults({Key? key, required this.query}) : super(key: key);
+
+  @override
+  _SearchResultsState createState() => _SearchResultsState();
+}
+
+class _SearchResultsState extends State<SearchResults> {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  List<Map<String, dynamic>> _results = [];
+  bool _isLoading = true;
+  bool _hasError = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchSearchResults();
+  }
+
+  Future<void> _fetchSearchResults() async {
+    try {
+      final querySnapshot = await _firestore
+          .collection('restaurant')
+          .where('name', isGreaterThanOrEqualTo: widget.query)
+          .where('name', isLessThanOrEqualTo: widget.query + '\uf8ff')
+          .get();
+
+      setState(() {
+        _results = querySnapshot.docs.map((doc) => doc.data()..['id'] = doc.id).toList();
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _hasError = true;
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
+        backgroundColor: Color.fromARGB(255, 217, 255, 228),
         title: const Text('Search Results'),
-        leading: IconButton(
-          icon: const Icon(Icons.cancel),
-          onPressed: () => Navigator.pop(context),
-        ),
+        
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: res.isEmpty
-            ? const Center(child: Text('No results found')) // Handle empty list case
-            :ListView.builder(
-                itemCount:res.length, // Adjust this according to your actual item count
-                itemBuilder: (context, index) {
-                 final result = results[index]; 
-                  
-                 return InkWell(
-                    
-                    // onTap: () {
-                    //   Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(builder: (context) => PlaceProfile()),
-                    //   );
-                    // },
-                    child:  ListTile(
-                    leading: ConstrainedBox(
-                            constraints: BoxConstraints(
-                            minWidth: 44,
-                            minHeight: 44,
-                            maxWidth: 64,
-                            maxHeight: 64,
-                            ),
-                            child: Image.asset( '${result['imageUrl']}', fit: BoxFit.cover),
-                            ),
-                    title: Text('${result['title']}'),
-                    subtitle: Text('${result['Dis']}'),
-                    trailing:  Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                      Text('${result['rating']}'),
-                      SizedBox(width: 5), // Add some spacing
-                      Icon(Icons.star, color: Colors.yellow),
-                ],
-              ),
+      
+      body: Container(
+  color: Color.fromARGB(255, 246, 255, 249), // Set your desired background color here
+  padding: const EdgeInsets.all(16.0), // Adjust padding values as needed
+  child: _isLoading
+    ? const Center(child: CircularProgressIndicator())
+    : _hasError
+      ? const Center(child: Text('Error loading search results'))
+      : _results.isEmpty
+        ? const Center(child: Text('No results found'))
+        : ListView.builder(
+            itemCount: _results.length,
+            itemBuilder: (context, index) {
+              final result = _results[index];
+
+              return InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PlaceProfile(
+                        restaurantId: result['id'],
+                      ),
                     ),
                   );
                 },
-              ),
-            
+                child: ListTile(
+                              leading: ConstrainedBox(
+                                constraints: const BoxConstraints(
+                                  minWidth: 64,
+                                  minHeight: 64,
+                                  maxWidth: 64,
+                                  maxHeight: 64,
+                                ),
+                                child: Image.asset(
+                                        result['image'],
+                                        fit: BoxFit.cover,
+                                      )
+                                    
+                              ),
+                              title: Text(result['name'] ?? 'Unknown'),
+                              subtitle: Text('${result['distance'] ?? 'Unknown'} km'),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(result['rating']?.toString() ?? 'N/A'),
+                                  const SizedBox(width: 5),
+                                  const Icon(Icons.star, color: Colors.yellow),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+          
+                      ),
       ),
     );
   }
 }
+

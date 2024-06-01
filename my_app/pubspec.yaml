@@ -80,7 +80,24 @@ flutter:
       - assets/las.jpg
       - assets/background.jpg
       - assets/circle.jpg
-      
+      - assets/res4.jpg
+      - assets/res5.jpg
+      - assets/res6.jpg
+      - assets/res7.jpg
+      - assets/res8.jpg
+      - assets/res9.jpg
+      - assets/res10.jpg
+      - assets/res11.jpg
+      - assets/res12.jpg
+      - assets/res13.jpg
+      - assets/res14.jpg
+      - assets/res15.jpg
+      - assets/res16.jpg
+      - assets/res17.jpg
+      - assets/res18.jpg
+      - assets/res19.jpg
+      - assets/res20.jpg
+    
                 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

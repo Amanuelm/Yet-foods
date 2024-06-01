@@ -1,9 +1,9 @@
-// 
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'place_profile.dart'; // Ensure this import is correct
-import 'Person_Profile.dart';
-import 'Search_results.dart';
+import 'person_Profile.dart';
+import 'search_results.dart';
+import 'type_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -23,28 +23,32 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _fetchResData() async {
-  try {
-    QuerySnapshot querySnapshot = await _firestore.collection('restaurant').get();
-    print('Number of Restaurants fetched: ${querySnapshot.docs.length}'); // Added print statement
+    try {
+      QuerySnapshot querySnapshot = await _firestore.collection('restaurant').get();
+      print('Number of Restaurants fetched: ${querySnapshot.docs.length}'); // Added print statement
 
-    setState(() {
-      resData = querySnapshot.docs.map((doc) {
-        return {
-          'id': doc.id,
-          'imageUrl': doc['image'] ?? 'assets/res3.jpg',
-          'name': doc['name'],
-          'rating': doc['rating'].toString(),
-        };
-      }).toList();
-    });
-  } catch (e) {
-    print('Error fetching data: $e');
+      setState(() {
+        resData = querySnapshot.docs.map((doc) {
+          final data = doc.data() as Map<String, dynamic>?; // Ensure type safety
+          return {
+            'id': doc.id,
+            'imageUrl': data?['image'] ?? 'assets/res3.jpg',
+            'name': data?['name'] ?? 'Unknown',
+            'rating': data?['rating'] ?? 'Unknown',
+            'distance': data?['distance'] ?? 'Unknown',
+          };
+        }).toList();
+      });
+    } catch (e) {
+      print('Error fetching data: $e');
+    }
   }
-}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+      backgroundColor: Color.fromARGB(255, 217, 255, 228),
         title: const Text('Home'),
         actions: [
           IconButton(
@@ -59,7 +63,7 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: Container(
-        color: Colors.white,
+        color: Color.fromARGB(255, 246, 255, 249),
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,7 +81,7 @@ class _HomePageState extends State<HomePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => SearchResults(res: text),
+                    builder: (context) => SearchResults(query: text),
                   ),
                 );
               },
@@ -88,11 +92,11 @@ class _HomePageState extends State<HomePage> {
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: [
-                  _buildRecommendedItem('Pizza', 'assets/pizza2.jpg'),
-                  _buildRecommendedItem('Burger', 'assets/burger2.jpg'),
-                  _buildRecommendedItem('Cafe', 'assets/icafe.jpg'),
-                  _buildRecommendedItem('Restaurant', 'assets/res.png'),
-                  _buildRecommendedItem('Bar', 'assets/bar.jpg'),
+                  _buildRecommendedItem(context, 'Pizza', 'assets/pizza2.jpg'),
+                  _buildRecommendedItem(context, 'Burger', 'assets/burger2.jpg'),
+                  _buildRecommendedItem(context, 'Cafe', 'assets/icafe.jpg'),
+                  _buildRecommendedItem(context, 'Restaurant', 'assets/res.png'),
+                  _buildRecommendedItem(context, 'Bar', 'assets/bar.jpg'),
                 ],
               ),
             ),
@@ -117,9 +121,9 @@ class _HomePageState extends State<HomePage> {
                     },
                     child: ListTile(
                       leading: ConstrainedBox(
-                        constraints: BoxConstraints(
-                          minWidth: 44,
-                          minHeight: 44,
+                        constraints: const BoxConstraints(
+                          minWidth: 64,
+                          minHeight: 64,
                           maxWidth: 64,
                           maxHeight: 64,
                         ),
@@ -128,14 +132,16 @@ class _HomePageState extends State<HomePage> {
                           fit: BoxFit.cover,
                         ),
                       ),
-                      tileColor: Color.fromARGB(255, 64, 95, 65),
+                      tileColor: const Color.fromARGB(255, 64, 95, 65),
                       title: Text(itemData['name']),
+                      subtitle:  Text('${itemData['distance']} km'),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(itemData['rating']),
                           SizedBox(width: 5),
                           Icon(Icons.star, color: Colors.yellow),
+                          
                         ],
                       ),
                     ),
@@ -149,22 +155,33 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildRecommendedItem(String name, String img) {
-    return Container(
-      width: 100,
-      margin: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: Column(
-        children: [
-          CircleAvatar(
-            radius: 30,
-            backgroundImage: AssetImage(img),
+  Widget _buildRecommendedItem(BuildContext context, String name, String img) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => TypePage(restaurantType: name),
           ),
-          Text(name),
-        ],
+        );
+      },
+      child: Container(
+        width: 100,
+        margin: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: Column(
+          children: [
+            CircleAvatar(
+              radius: 30,
+              backgroundImage: AssetImage(img),
+            ),
+            Text(name),
+          ],
+        ),
       ),
     );
   }
 }
+
 
 //
 //// home.dart

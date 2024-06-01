@@ -2,30 +2,45 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class PlaceProfile extends StatelessWidget {
+class PlaceProfile extends StatefulWidget {
   final String restaurantId;
+
+  const PlaceProfile({required this.restaurantId});
+
+  @override
+  _PlaceProfileState createState() => _PlaceProfileState();
+}
+
+class _PlaceProfileState extends State<PlaceProfile> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final TextEditingController _commentController = TextEditingController();
+  late Future<Map<String, dynamic>> _restaurantData;
+  late Future<List<Map<String, dynamic>>> _foodData;
+  late Future<List<Map<String, dynamic>>> _reviews;
 
-  PlaceProfile({required this.restaurantId});
+  @override
+  void initState() {
+    super.initState();
+    _restaurantData = _fetchRestaurantData();
+    _foodData = _fetchFoodData();
+    _reviews = _fetchReviews();
+  }
 
   Future<Map<String, dynamic>> _fetchRestaurantData() async {
-    final doc = await _firestore.collection('restaurant').doc(restaurantId).get();
+    final doc = await _firestore.collection('restaurant').doc(widget.restaurantId).get();
     return doc.data()!;
   }
 
   Future<List<Map<String, dynamic>>> _fetchFoodData() async {
     final querySnapshot = await _firestore.collection('foods')
-        .where('id', isEqualTo: restaurantId).get();
-    final foodData = querySnapshot.docs.map((doc) => doc.data()).toList();
-    print('Fetched ${foodData.length} food items');
-    return foodData;
+        .where('id', isEqualTo: widget.restaurantId).get();
+    return querySnapshot.docs.map((doc) => doc.data()..['docId'] = doc.id).toList();
   }
 
   Future<List<Map<String, dynamic>>> _fetchReviews() async {
     final querySnapshot = await _firestore.collection('comments')
-        .where('id', isEqualTo: restaurantId).get();
-    return querySnapshot.docs.map((doc) => doc.data()).toList();
+        .where('id', isEqualTo: widget.restaurantId).get();
+    return querySnapshot.docs.map((doc) => doc.data()..['docId'] = doc.id).toList();
   }
 
   Future<String> _getUserEmail() async {
@@ -37,6 +52,28 @@ class PlaceProfile extends StatelessWidget {
     return '';
   }
 
+  void _addComment(String text) async {
+    final userEmail = await _getUserEmail();
+    if (userEmail.isNotEmpty) {
+      await _firestore.collection('comments').add({
+        'id': widget.restaurantId,
+        'email': userEmail,
+        'comment': text,
+      });
+      setState(() {
+        _reviews = _fetchReviews();
+      });
+      _commentController.clear();
+    }
+  }
+
+  void _deleteComment(String docId) async {
+    await _firestore.collection('comments').doc(docId).delete();
+    setState(() {
+      _reviews = _fetchReviews();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,11 +81,7 @@ class PlaceProfile extends StatelessWidget {
         title: Text('Place Profile'),
       ),
       body: FutureBuilder(
-        future: Future.wait([
-          _fetchRestaurantData(),
-          _fetchFoodData(),
-          _fetchReviews(),
-        ]),
+        future: Future.wait([_restaurantData, _foodData, _reviews]),
         builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -63,18 +96,34 @@ class PlaceProfile extends StatelessWidget {
 
           return ListView(
             children: [
+              if (restaurantData['image'] != null)
+                Image.asset(
+                  restaurantData['image'],
+                  fit: BoxFit.cover,
+                  height: 250,
+                  width: double.infinity,
+                ),
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(restaurantData['name']),
+                    Text(
+                      restaurantData['name'],
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 8),
                     Row(
                       children: [
                         Icon(Icons.star, color: Colors.orange),
-                        Text('${restaurantData['rating']} '), // Example static review count
+                        SizedBox(width: 4),
+                        Text('${restaurantData['rating']}'),
                       ],
                     ),
+                    SizedBox(height: 8),
                     Text('Working hours: ${restaurantData['working hours']}'),
                     Text('Distance: ${restaurantData['distance']} km'),
                   ],
@@ -82,7 +131,7 @@ class PlaceProfile extends StatelessWidget {
               ),
               Divider(),
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(16.0),
                 child: Text(
                   'Menu',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -95,7 +144,7 @@ class PlaceProfile extends StatelessWidget {
               )),
               Divider(),
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(16.0),
                 child: Text(
                   'Reviews',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -113,7 +162,7 @@ class PlaceProfile extends StatelessWidget {
             children: [
               Expanded(
                 child: TextField(
-                  controller: _commentController, // Use the controller
+                  controller: _commentController,
                   decoration: InputDecoration(
                     hintText: 'Add a comment...',
                     border: OutlineInputBorder(
@@ -124,18 +173,10 @@ class PlaceProfile extends StatelessWidget {
               ),
               IconButton(
                 icon: Icon(Icons.send),
-                onPressed: () async {
+                onPressed: () {
                   final text = _commentController.text;
                   if (text.isNotEmpty) {
-                    final userEmail = await _getUserEmail(); // Await the user email
-                    if (userEmail.isNotEmpty) {
-                      await _firestore.collection('comments').add({
-                        'id': restaurantId,
-                        'email': userEmail, // Use the fetched user email
-                        'comment': text,
-                      });
-                      _commentController.clear(); // Clear the text field
-                    }
+                    _addComment(text);
                   }
                 },
               ),
@@ -148,6 +189,7 @@ class PlaceProfile extends StatelessWidget {
 
   Widget _buildMenuItem(String name, String price, String img) {
     return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       title: Row(
         children: [
           ConstrainedBox(
@@ -157,25 +199,22 @@ class PlaceProfile extends StatelessWidget {
               maxWidth: 64,
               maxHeight: 64,
             ),
-            child: Image.asset(
+            child: Image.network(
               img,
               fit: BoxFit.cover,
             ),
           ),
-          const SizedBox(width: 8),
-          Text(name),
+          const SizedBox(width: 16),
+          Text(
+            name,
+            style: TextStyle(fontSize: 16),
+          ),
         ],
       ),
-      trailing: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Text(price,
-              style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
-        ],
+      trailing: Text(
+        price,
+        style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
       ),
-      onTap: () {
-        // Add to cart functionality (optional)
-      },
     );
   }
 
@@ -189,14 +228,18 @@ class PlaceProfile extends StatelessWidget {
         return ListTile(
           leading: Icon(Icons.person),
           title: Text(review['email']),
-          trailing:Text(review['comment']),
+          subtitle: Text(review['comment']),
+          trailing: IconButton(
+            icon: Icon(Icons.delete),
+            onPressed: () {
+              _deleteComment(review['docId']);
+            },
+          ),
         );
       },
     );
   }
 }
-
-
 // import 'package:flutter/material.dart';
 
 // final List<String> reviews = [

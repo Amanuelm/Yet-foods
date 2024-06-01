@@ -17,13 +17,15 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 217, 255, 228),
         title: const Text('Login'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+      body: Container(
+  color: Color.fromARGB(255, 246, 255, 249), // Set your desired background color here
+  padding: const EdgeInsets.all(20.0), // Adjust padding values as needed
+  child: Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children:[
             TextField(
               controller: _emailController,
               decoration: const InputDecoration(
@@ -43,7 +45,11 @@ class _LoginPageState extends State<LoginPage> {
             ElevatedButton(
               onPressed: () => _signInWithEmailAndPassword(),
               child: const Text('Login'),
+              style: ElevatedButton.styleFrom( 
+    backgroundColor: Color.fromARGB(255, 2, 234, 60), // Change background color to green
+  ),
             ),
+             
           ],
         ),
       ),
