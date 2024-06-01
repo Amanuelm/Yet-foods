@@ -24,7 +24,7 @@ class _SignUpPageState extends State<SignUpPage> {
         backgroundColor: const Color.fromARGB(255, 226, 248, 232),
         title: const Text('Sign Up'),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -63,9 +63,9 @@ class _SignUpPageState extends State<SignUpPage> {
             ElevatedButton(
               onPressed: () => _createUserWithEmailAndPassword(),
               child: const Text('Sign Up'),
-              style: ElevatedButton.styleFrom( 
-    backgroundColor: const Color.fromARGB(255, 91, 255, 132), // Change background color to green
-  ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 91, 255, 132), // Change background color to green
+              ),
             ),
           ],
         ),
@@ -101,7 +101,7 @@ class _SignUpPageState extends State<SignUpPage> {
       }
 
       UserCredential userCredential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
-      
+
       // Store additional user information in Firestore
       await _firestore.collection('users').doc(userCredential.user!.uid).set({
         'name': name,
