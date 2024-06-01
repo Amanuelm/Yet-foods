@@ -17,11 +17,11 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 217, 255, 228),
+        backgroundColor: const Color.fromARGB(255, 217, 255, 228),
         title: const Text('Login'),
       ),
       body: Container(
-  color: Color.fromARGB(255, 246, 255, 249), // Set your desired background color here
+ // color: Color.fromARGB(255, 246, 255, 249), // Set your desired background color here
   padding: const EdgeInsets.all(20.0), // Adjust padding values as needed
   child: Column(
     mainAxisAlignment: MainAxisAlignment.center,
@@ -46,7 +46,7 @@ class _LoginPageState extends State<LoginPage> {
               onPressed: () => _signInWithEmailAndPassword(),
               child: const Text('Login'),
               style: ElevatedButton.styleFrom( 
-    backgroundColor: Color.fromARGB(255, 2, 234, 60), // Change background color to green
+    backgroundColor: const Color.fromARGB(255, 91, 255, 132), // Change background color to green
   ),
             ),
              
@@ -64,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
       // Basic email validation (optional)
       if (email.isEmpty || !email.contains('@')) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Please enter a valid email address.'),
           ),
         );
@@ -101,7 +101,7 @@ class _LoginPageState extends State<LoginPage> {
     } catch (error) {
       print(error); // Log the error for debugging (e.g., network errors)
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('An unexpected error occurred.'),
         ),
       );

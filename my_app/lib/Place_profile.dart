@@ -33,7 +33,7 @@ class _PlaceProfileState extends State<PlaceProfile> {
 
   Future<List<Map<String, dynamic>>> _fetchFoodData() async {
     final querySnapshot = await _firestore.collection('foods')
-        .where('id', isEqualTo: widget.restaurantId).get();
+        .where('rid', isEqualTo: widget.restaurantId).get();
     return querySnapshot.docs.map((doc) => doc.data()..['docId'] = doc.id).toList();
   }
 
@@ -78,13 +78,14 @@ class _PlaceProfileState extends State<PlaceProfile> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Place Profile'),
+        backgroundColor: const Color.fromARGB(255, 226, 248, 232),
+        title: const Text('Place Profile'),
       ),
       body: FutureBuilder(
         future: Future.wait([_restaurantData, _foodData, _reviews]),
         builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
@@ -110,28 +111,28 @@ class _PlaceProfileState extends State<PlaceProfile> {
                   children: [
                     Text(
                       restaurantData['name'],
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Row(
                       children: [
-                        Icon(Icons.star, color: Colors.orange),
-                        SizedBox(width: 4),
+                        const Icon(Icons.star, color: Colors.orange),
+                        const SizedBox(width: 4),
                         Text('${restaurantData['rating']}'),
                       ],
                     ),
-                    SizedBox(height: 8),
+                    const SizedBox(height: 8),
                     Text('Working hours: ${restaurantData['working hours']}'),
                     Text('Distance: ${restaurantData['distance']} km'),
                   ],
                 ),
               ),
-              Divider(),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
+              const Divider(),
+              const Padding(
+                padding: EdgeInsets.all(16.0),
                 child: Text(
                   'Menu',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -142,9 +143,9 @@ class _PlaceProfileState extends State<PlaceProfile> {
                 food['price'].toString(),
                 food['image'],
               )),
-              Divider(),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
+              const Divider(),
+              const Padding(
+                padding: EdgeInsets.all(16.0),
                 child: Text(
                   'Reviews',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -172,7 +173,7 @@ class _PlaceProfileState extends State<PlaceProfile> {
                 ),
               ),
               IconButton(
-                icon: Icon(Icons.send),
+                icon: const Icon(Icons.send),
                 onPressed: () {
                   final text = _commentController.text;
                   if (text.isNotEmpty) {
@@ -193,27 +194,27 @@ class _PlaceProfileState extends State<PlaceProfile> {
       title: Row(
         children: [
           ConstrainedBox(
-            constraints: BoxConstraints(
+            constraints: const BoxConstraints(
               minWidth: 44,
               minHeight: 44,
               maxWidth: 64,
               maxHeight: 64,
             ),
-            child: Image.network(
-              img,
+            child: Image.asset(
+              '$img.jpg',
               fit: BoxFit.cover,
             ),
           ),
           const SizedBox(width: 16),
           Text(
             name,
-            style: TextStyle(fontSize: 16),
+            style: const TextStyle(fontSize: 16),
           ),
         ],
       ),
       trailing: Text(
-        price,
-        style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        price+" Birr",
+        style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
       ),
     );
   }
@@ -221,16 +222,16 @@ class _PlaceProfileState extends State<PlaceProfile> {
   Widget _buildReviews(List<Map<String, dynamic>> reviews) {
     return ListView.builder(
       shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       itemCount: reviews.length,
       itemBuilder: (context, index) {
         final review = reviews[index];
         return ListTile(
-          leading: Icon(Icons.person),
+          leading: const Icon(Icons.person),
           title: Text(review['email']),
           subtitle: Text(review['comment']),
           trailing: IconButton(
-            icon: Icon(Icons.delete),
+            icon: const Icon(Icons.delete),
             onPressed: () {
               _deleteComment(review['docId']);
             },

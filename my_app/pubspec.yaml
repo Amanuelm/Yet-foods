@@ -97,6 +97,27 @@ flutter:
       - assets/res18.jpg
       - assets/res19.jpg
       - assets/res20.jpg
+      - assets/f1.jpg
+      - assets/f2.jpg
+      - assets/f3.jpg
+      - assets/f4.jpg
+      - assets/f5.jpg
+      - assets/f6.jpg
+      - assets/f7.jpg
+      - assets/f8.jpg
+      - assets/f9.jpg
+      - assets/f10.jpg
+      - assets/f11.jpg
+      - assets/f12.jpg
+      - assets/f13.jpg
+      - assets/f14.jpg
+      - assets/f15.jpg
+      - assets/f16.jpg
+      - assets/f17.jpg
+      - assets/f18.jpg
+      - assets/f19.jpg
+      - assets/f20.jpg
+      - assets/f21.jpg
     
                 
   # An image asset can refer to one or more resolution-specific "variants", see

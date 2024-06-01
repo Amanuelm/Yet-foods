@@ -17,7 +17,7 @@ class IntroPage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CircleAvatar(
+              const CircleAvatar(
                 radius: 150, // Adjust radius as needed
                 backgroundImage: AssetImage('assets/circle.jpg'), 
               ),
@@ -42,13 +42,13 @@ class IntroPage extends StatelessWidget {
                     Navigator.pushNamed(context, '/login');
               },
               style: ElevatedButton.styleFrom( 
-    backgroundColor: Color.fromARGB(255, 236, 15, 15), // Change background color to green
+    backgroundColor: const Color.fromARGB(255, 236, 15, 15), // Change background color to green
   ),
-              child: SizedBox(
+              child: const SizedBox(
                width:170.0, // Adjust width as needed
               height: 60.0, // Adjust height as needed
              child: Center( 
-              child: const Text('Log In',style: TextStyle(color:Color.fromARGB(255, 252, 252, 252),fontSize: 20)),)
+              child: Text('Log In',style: TextStyle(color:Color.fromARGB(255, 252, 252, 252),fontSize: 20)),)
               ),
               ),
                   const SizedBox(height: 30),
@@ -58,13 +58,13 @@ class IntroPage extends StatelessWidget {
                       Navigator.pushNamed(context, '/signup');
                     },
                     style: ElevatedButton.styleFrom( 
-    backgroundColor: Color.fromARGB(255, 2, 234, 60), // Change background color to green
+    backgroundColor: const Color.fromARGB(255, 2, 234, 60), // Change background color to green
   ),
-                   child: SizedBox(
+                   child: const SizedBox(
                width: 170.0, // Adjust width as needed
               height: 60.0, // Adjust height as needed
              child: Center( 
-              child: const Text('Sign up',style: TextStyle(color:Color.fromARGB(255, 255, 255, 255),fontSize: 20)),)
+              child: Text('Sign up',style: TextStyle(color:Color.fromARGB(255, 255, 255, 255),fontSize: 20)),)
               ), // Change color to red),
                   ),
                 ],

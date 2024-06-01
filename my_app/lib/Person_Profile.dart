@@ -61,10 +61,8 @@ class _ProfilePageState extends State<ProfilePage> {
       await _firestore.collection('users').doc(user.uid).update({
         'name': _fullNameController.text,
         'email': _emailController.text,
-        // Update other fields as necessary
       });
 
-      // Optionally update the user's email in FirebaseAuth
       if (_emailController.text.isNotEmpty) {
         await user.updateEmail(_emailController.text);
       }
@@ -80,52 +78,59 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Profile'),
+        backgroundColor: const Color.fromARGB(255, 226, 248, 232),
+        title: const Text('Profile'),
         actions: [
           IconButton(
-            icon: Icon(Icons.logout),
+            icon: const Icon(Icons.logout),
             onPressed: _logout,
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            GestureDetector(
-              onTap: _pickImage,
-              child: CircleAvatar(
-                radius: 60,
-                backgroundColor: Colors.grey[200],
-                backgroundImage: _image != null ? FileImage(_image!) : null,
-                child: _image == null
-                    ? Icon(
-                        Icons.camera_alt,
-                        color: Colors.grey[800],
-                        size: 60,
-                      )
-                    : null,
-              ),
-            ),
-            SizedBox(height: 16),
-            _buildTextField(_fullNameController, 'Full Name', Icons.person),
-            SizedBox(height: 16),
-            _buildTextField(_emailController, 'Email', Icons.email),
-            SizedBox(height: 32),
-            ElevatedButton(
-              onPressed: () async {
-                await _updateUserProfile();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Profile updated successfully')),
-                );
-              },
-              child: Text('Update Profile'),
-            ),
-          ],
+      body: 
+      Container(
+        child:  SingleChildScrollView(
+  padding: const EdgeInsets.all(16.0),
+  child: Container(  
+    child: Column(
+      children: [
+        GestureDetector(
+          onTap: _pickImage,
+          child: CircleAvatar(
+            radius: 60,
+            backgroundColor: Colors.grey[200],
+            backgroundImage: _image != null ? FileImage(_image!) : null,
+            child: _image == null
+                ? Icon(
+                    Icons.camera_alt,
+                    color: Colors.grey[800],
+                    size: 60,
+                  )
+                : null,
+          ),
         ),
-      ),
-    );
-  }
+        const SizedBox(height: 16),
+        _buildTextField(_fullNameController, 'Full Name', Icons.person),
+        const SizedBox(height: 16),
+        _buildTextField(_emailController, 'Email', Icons.email),
+        const SizedBox(height: 32),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom( 
+    backgroundColor: const Color.fromARGB(255, 91, 255, 132), // Change background color to green
+  ),
+          onPressed: () async {
+            await _updateUserProfile();
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Profile updated successfully')),
+            );
+          },
+          child: const Text('Update Profile'),
+        ),
+      ],
+    ),
+  ),
+),
+    ));}
 
   Widget _buildTextField(TextEditingController controller, String labelText, IconData icon, {bool obscureText = false}) {
     return TextField(

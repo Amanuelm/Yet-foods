@@ -21,6 +21,7 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 226, 248, 232),
         title: const Text('Sign Up'),
       ),
       body: Padding(
@@ -62,6 +63,9 @@ class _SignUpPageState extends State<SignUpPage> {
             ElevatedButton(
               onPressed: () => _createUserWithEmailAndPassword(),
               child: const Text('Sign Up'),
+              style: ElevatedButton.styleFrom( 
+    backgroundColor: const Color.fromARGB(255, 91, 255, 132), // Change background color to green
+  ),
             ),
           ],
         ),
@@ -79,7 +83,7 @@ class _SignUpPageState extends State<SignUpPage> {
       // Basic email validation (optional)
       if (email.isEmpty || !email.contains('@')) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Please enter a valid email address.'),
           ),
         );
@@ -89,7 +93,7 @@ class _SignUpPageState extends State<SignUpPage> {
       // Basic password validation (optional)
       if (password.length < 6) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Password must be at least 6 characters long.'),
           ),
         );
@@ -133,7 +137,7 @@ class _SignUpPageState extends State<SignUpPage> {
     } catch (error) {
       print(error); // Log the error for debugging (e.g., network errors)
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('An unexpected error occurred.'),
         ),
       );

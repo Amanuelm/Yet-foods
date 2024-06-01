@@ -22,37 +22,48 @@ class _HomePageState extends State<HomePage> {
     _fetchResData();
   }
 
-  Future<void> _fetchResData() async {
-    try {
-      QuerySnapshot querySnapshot = await _firestore.collection('restaurant').get();
-      print('Number of Restaurants fetched: ${querySnapshot.docs.length}'); // Added print statement
+ Future<void> _fetchResData() async {
+  try {
+    QuerySnapshot querySnapshot = await _firestore.collection('restaurant').get();
+    print('Number of Restaurants fetched: ${querySnapshot.docs.length}');
 
-      setState(() {
-        resData = querySnapshot.docs.map((doc) {
-          final data = doc.data() as Map<String, dynamic>?; // Ensure type safety
-          return {
-            'id': doc.id,
-            'imageUrl': data?['image'] ?? 'assets/res3.jpg',
-            'name': data?['name'] ?? 'Unknown',
-            'rating': data?['rating'] ?? 'Unknown',
-            'distance': data?['distance'] ?? 'Unknown',
-          };
-        }).toList();
+    setState(() {
+      resData = querySnapshot.docs.map((doc) {
+        final data = doc.data() as Map<String, dynamic>?; // Ensure type safety
+        return {
+          'id': doc.id,
+          'imageUrl': data?['image'] ?? 'assets/res3.jpg',
+          'name': data?['name'] ?? 'Unknown',
+          'rating': data?['rating']?.toString() ?? 'Unknown',
+          'distance': data?['distance']?.toString() ?? '0', // Default to '0' if null
+        };
+      }).toList();
+
+      // Sort resData by distance only
+      resData.sort((a, b) {
+        double distanceA = double.tryParse(a['distance']) ?? 0;
+        double distanceB = double.tryParse(b['distance']) ?? 0;
+
+        return distanceA.compareTo(distanceB); // Ascending order by distance
       });
-    } catch (e) {
-      print('Error fetching data: $e');
-    }
+    });
+  } catch (e) {
+    print('Error fetching data: $e');
   }
+}
+
+
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-      backgroundColor: Color.fromARGB(255, 217, 255, 228),
+      backgroundColor: const Color.fromARGB(255, 226, 248, 232),
         title: const Text('Home'),
         actions: [
           IconButton(
-            icon: Icon(Icons.person), // Replace with your desired icon
+            icon: const Icon(Icons.person), // Replace with your desired icon
             onPressed: () {
               Navigator.push(
                 context,
@@ -63,7 +74,7 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: Container(
-        color: Color.fromARGB(255, 246, 255, 249),
+       
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -107,6 +118,7 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 20),
             Expanded(
               child: ListView.builder(
+                
                 itemCount: resData.length,
                 itemBuilder: (context, index) {
                   final itemData = resData[index];
@@ -132,15 +144,15 @@ class _HomePageState extends State<HomePage> {
                           fit: BoxFit.cover,
                         ),
                       ),
-                      tileColor: const Color.fromARGB(255, 64, 95, 65),
+                      //tileColor: Color.fromARGB(255, 244, 250, 244),
                       title: Text(itemData['name']),
                       subtitle:  Text('${itemData['distance']} km'),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(itemData['rating']),
-                          SizedBox(width: 5),
-                          Icon(Icons.star, color: Colors.yellow),
+                          const SizedBox(width: 5),
+                          const Icon(Icons.star, color: Colors.yellow),
                           
                         ],
                       ),

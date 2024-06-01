@@ -33,6 +33,7 @@ class _TypePageState extends State<TypePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 226, 248, 232),
         centerTitle: true,
         title: Text(widget.restaurantType), // Replaced with restaurantType
       ),

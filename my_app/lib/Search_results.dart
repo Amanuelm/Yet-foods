@@ -47,13 +47,13 @@ class _SearchResultsState extends State<SearchResults> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 217, 255, 228),
+        backgroundColor: Color.fromARGB(255, 226, 248, 232),
         title: const Text('Search Results'),
         
       ),
       
       body: Container(
-  color: Color.fromARGB(255, 246, 255, 249), // Set your desired background color here
+   // Set your desired background color here
   padding: const EdgeInsets.all(16.0), // Adjust padding values as needed
   child: _isLoading
     ? const Center(child: CircularProgressIndicator())
