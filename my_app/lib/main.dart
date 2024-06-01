@@ -5,7 +5,10 @@ import 'home_page.dart';
 import 'login_page.dart';
 import 'intro.dart';
 
-
+/*Gropu members:
+Amanuel Mehari OV6906 Drb2002
+Anobie Tesfaye LD1791 Drb2002
+Dagim Ashenafi XI9378 Drb2002*/
 void main() async {
   
   WidgetsFlutterBinding.ensureInitialized();
