@@ -35,7 +35,7 @@ class _TypePageState extends State<TypePage> {
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 226, 248, 232),
         centerTitle: true,
-        title: Text(widget.restaurantType), // Replaced with restaurantType
+        title: Text(widget.restaurantType), 
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
         future: _searchResults,
@@ -58,7 +58,7 @@ class _TypePageState extends State<TypePage> {
               final result = results[index];
               return InkWell(
                 onTap: () {
-                  debugPrint('Navigating to PlaceProfile with id: ${result['id']}'); // Add debug print
+                  debugPrint('Navigating to PlaceProfile with id: ${result['id']}'); 
                   Navigator.push(
                     context,
                     MaterialPageRoute(

@@ -76,11 +76,10 @@ class _SignUpPageState extends State<SignUpPage> {
   Future<void> _createUserWithEmailAndPassword() async {
     try {
       final name = _nameController.text.trim();
-      final phone = _phoneController.text.trim(); // Optional
+      final phone = _phoneController.text.trim();
       final email = _emailController.text.trim();
       final password = _passwordController.text.trim();
-
-      // Basic email validation (optional)
+      
       if (email.isEmpty || !email.contains('@')) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -89,8 +88,6 @@ class _SignUpPageState extends State<SignUpPage> {
         );
         return;
       }
-
-      // Basic password validation (optional)
       if (password.length < 6) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -101,15 +98,11 @@ class _SignUpPageState extends State<SignUpPage> {
       }
 
       UserCredential userCredential = await _auth.createUserWithEmailAndPassword(email: email, password: password);
-
-      // Store additional user information in Firestore
       await _firestore.collection('users').doc(userCredential.user!.uid).set({
         'name': name,
         'phone': phone,
         'email': email,
       });
-
-      // Navigate to your home screen (replace with your route name)
       Navigator.pushReplacementNamed(context, '/home');
     } on FirebaseAuthException catch (error) {
       String message = 'An error occurred.';
@@ -127,7 +120,7 @@ class _SignUpPageState extends State<SignUpPage> {
           message = 'The password is too weak.';
           break;
         default:
-          print(error.code); // Log the error for debugging
+          print(error.code); 
       }
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -135,7 +128,7 @@ class _SignUpPageState extends State<SignUpPage> {
         ),
       );
     } catch (error) {
-      print(error); // Log the error for debugging (e.g., network errors)
+      print(error); 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('An unexpected error occurred.'),

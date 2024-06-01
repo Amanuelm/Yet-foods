@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
 
-// TextEditingControllers for login fields
+
 final TextEditingController _emailController = TextEditingController();
 final TextEditingController _passwordController = TextEditingController();
 
@@ -21,8 +21,8 @@ class _LoginPageState extends State<LoginPage> {
         title: const Text('Login'),
       ),
       body: Container(
- // color: Color.fromARGB(255, 246, 255, 249), // Set your desired background color here
-  padding: const EdgeInsets.all(20.0), // Adjust padding values as needed
+
+  padding: const EdgeInsets.all(20.0), 
   child: Column(
     mainAxisAlignment: MainAxisAlignment.center,
     children:[
@@ -46,7 +46,7 @@ class _LoginPageState extends State<LoginPage> {
               onPressed: () => _signInWithEmailAndPassword(),
               child: const Text('Login'),
               style: ElevatedButton.styleFrom( 
-    backgroundColor: const Color.fromARGB(255, 91, 255, 132), // Change background color to green
+    backgroundColor: const Color.fromARGB(255, 91, 255, 132), 
   ),
             ),
              
@@ -72,7 +72,6 @@ class _LoginPageState extends State<LoginPage> {
       }
 
       await _auth.signInWithEmailAndPassword(email: email, password: password);
-      // Navigate to your home screen (replace with your route name)
       Navigator.pushReplacementNamed(context, '/home');
     } on FirebaseAuthException catch (error) {
       String message = 'An error occurred.';
@@ -90,8 +89,7 @@ class _LoginPageState extends State<LoginPage> {
           message = 'The password is incorrect.';
           break;
         default:
-          // Handle other errors
-          print(error.code); // Log the error for debugging
+          print(error.code); 
       }
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -99,7 +97,7 @@ class _LoginPageState extends State<LoginPage> {
         ),
       );
     } catch (error) {
-      print(error); // Log the error for debugging (e.g., network errors)
+      print(error); 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('An unexpected error occurred.'),

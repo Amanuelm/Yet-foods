@@ -18,7 +18,7 @@ class IntroPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const CircleAvatar(
-                radius: 150, // Adjust radius as needed
+                radius: 150, 
                 backgroundImage: AssetImage('assets/circle.jpg'), 
               ),
               const SizedBox(height: 24.0),
@@ -38,15 +38,14 @@ class IntroPage extends StatelessWidget {
                 children: [
                   ElevatedButton(
                    onPressed: () {
-    // Navigate to Login Page
                     Navigator.pushNamed(context, '/login');
               },
               style: ElevatedButton.styleFrom( 
-    backgroundColor: const Color.fromARGB(255, 236, 15, 15), // Change background color to green
+    backgroundColor: const Color.fromARGB(255, 236, 15, 15), 
   ),
               child: const SizedBox(
-               width:170.0, // Adjust width as needed
-              height: 60.0, // Adjust height as needed
+               width:170.0, 
+              height: 60.0, 
              child: Center( 
               child: Text('Log In',style: TextStyle(color:Color.fromARGB(255, 252, 252, 252),fontSize: 20)),)
               ),
@@ -54,18 +53,18 @@ class IntroPage extends StatelessWidget {
                   const SizedBox(height: 30),
                   ElevatedButton(
                     onPressed: () {
-                      // Navigate to Sign Up Page
+                      
                       Navigator.pushNamed(context, '/signup');
                     },
                     style: ElevatedButton.styleFrom( 
-    backgroundColor: const Color.fromARGB(255, 2, 234, 60), // Change background color to green
+    backgroundColor: const Color.fromARGB(255, 2, 234, 60), 
   ),
                    child: const SizedBox(
-               width: 170.0, // Adjust width as needed
-              height: 60.0, // Adjust height as needed
+               width: 170.0, 
+              height: 60.0, 
              child: Center( 
               child: Text('Sign up',style: TextStyle(color:Color.fromARGB(255, 255, 255, 255),fontSize: 20)),)
-              ), // Change color to red),
+              ), 
                   ),
                 ],
               ),

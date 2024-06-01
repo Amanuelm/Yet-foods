@@ -71,7 +71,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<void> _logout() async {
     await _auth.signOut();
-    Navigator.pushReplacementNamed(context, '/login'); // Adjust this as necessary to navigate to your login screen
+    Navigator.pushReplacementNamed(context, '/login'); 
   }
 
   @override
@@ -116,7 +116,7 @@ class _ProfilePageState extends State<ProfilePage> {
         const SizedBox(height: 32),
         ElevatedButton(
           style: ElevatedButton.styleFrom( 
-    backgroundColor: const Color.fromARGB(255, 91, 255, 132), // Change background color to green
+    backgroundColor: const Color.fromARGB(255, 91, 255, 132), 
   ),
           onPressed: () async {
             await _updateUserProfile();
